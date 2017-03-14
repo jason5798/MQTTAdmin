@@ -1,0 +1,120 @@
+<%- include extend/header_device.ejs %>
+
+	<table id="table1"  class="display" cellspacing="0" width="100%">
+		<thead>
+            <tr style="color:#428bca">
+            <th>Item</th>
+            <th>Receive time</th>
+            <th>Data</th>
+            <% if(type === 'pir'){ %>
+				<th>Trigger</th>
+			<% }else if(type === 'gps'){ %>
+				<th>Latitude</th>
+				<th>Longitude</th>
+			<% }else if(type === 'pm25'){ %>
+				<th>Value</th>
+				<th>BATL</th>
+			<% }else if(type === 'flood'){ %>
+				<th>Trigger</th>
+				<th>BATL</th>
+			<% } %>
+            <th>Rss</th>
+            <th>SNR</th>
+            <th>SF</th>
+            <th>Channel</th>
+            <th>ApId</th>
+			<th>ApMac</th>
+			<th>Frame</th>
+            </tr>
+        </thead>
+        <% if(devices != null && devices.length >0){ %>
+
+		<tbody>
+
+			<% for(var i=0;i<length ;i++){ %>
+				<tr>
+					<td><%= i%></td>
+					<td><%= devices[i].date%></td>
+					<td><%= devices[i].data%></td>
+					<% if(devices[i].info != undefined){ %>
+
+						<% if(type === 'pir'){ %>
+							<% if(devices[i].info.trigger != undefined && devices[i].info.trigger != 9  ){ %>
+								<td><%= devices[i].info.trigger %></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+						<% }else if(type === 'gps'){ %>
+
+							<% if(devices[i].info.GPS_N  != undefined && devices[i].info.GPS_N != 9  ){ %>
+								<td><%= devices[i].info.GPS_N %></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+							<% if(devices[i].info.GPS_E  != undefined && devices[i].info.GPS_E != 9  ){ %>
+								<td><%= devices[i].info.GPS_E %></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+
+						<% }else if(type === 'pm25'){ %>
+
+							<% if(devices[i].info.value  != undefined && devices[i].info.value != 9  ){ %>
+								<td><%= devices[i].info.value %></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+							<% if(devices[i].info.BATL  != undefined && devices[i].info.BATL != 9  ){ %>
+								<td><%= devices[i].info.BATL%></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+
+						<% }else if(type === 'flood'){ %>
+
+							<% if(devices[i].info.trigger  != undefined && devices[i].info.trigger != 9  ){ %>
+								<td><%= devices[i].info.trigger %></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+							<% if(devices[i].info.BATL  != undefined && devices[i].info.BATL != 9  ){ %>
+								<td><%= devices[i].info.BATL%></td>
+							<% }else{ %>
+								<td>X</td>
+							<% } %>
+
+						<% } %>
+
+
+
+					<% }else{ %>
+						<% if(type === 'pir'){ %>
+
+							<td>X</td>
+
+						<% } else if(type != 'others'){ %>
+
+							<td>X</td>
+							<td>X</td>
+
+						<% } %>
+					<% } %>
+					<td><%= devices[i].extra.rssi%></td>
+					<td><%= devices[i].extra.snr%></td>
+					<td><%= devices[i].extra.sf%></td>
+					<td><%= devices[i].extra.channel%></td>
+					<td><%= devices[i].extra.gwid%></td>
+					<td></td>
+					<td><%= devices[i].extra.frameCnt%></td>
+				</tr>
+			<% } %>
+
+		</tbody>
+
+	<% } %>
+	</table>
+	<input type="hidden" id="mac" name="mac" value="<%= mac%>">
+	<input type="hidden" id="type" name="type" value="<%= type%>">
+	<input type="hidden" id="date" name="date" value="<%= date%>">
+	<input type="hidden" id="option" name="option" value="<%= option%>">
+<%- include extend/footer %>
