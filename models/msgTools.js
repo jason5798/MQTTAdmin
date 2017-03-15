@@ -261,8 +261,12 @@ function getDevicesArray(obj,item,type){
 
 
 exports.getFinalData = function (finalist) {
-    var mItem = 1;
     var array = [];
+    if(getType(finalist) !='object'){
+        array;
+    }
+    var mItem = 1;
+    
     if(finalist){
 
         //console.log( 'Last Device Information \n '+JSON.stringify( mObj));

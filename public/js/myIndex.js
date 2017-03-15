@@ -6,6 +6,9 @@ var initBtnStr ="#pir";
 var type = document.getElementById("type").value;
 var host = window.location.hostname;
 var port = window.location.port;
+//Jason add for avoid ws disturb
+var flag = 'flag_' + Math.floor(Math.random() * 1000);
+var isChangeTable = false;
 
 var opt2={
      "order": [[ 2, "desc" ]],
@@ -25,19 +28,31 @@ function wsConn() {
   ws = new WebSocket(wsUri);
   ws.onmessage = function(m) {
     //console.log('< from-node-red:',m.data);
-    if (typeof(m.data) === "string" && m. data !== null){
+    if (typeof(m.data) === "string" && m.data !== null){
       var msg =JSON.parse(m.data);
       console.log("from-node-red : id:"+msg.id);
       if(msg.id === 'change_table'){
+          var json = msg.v;
+          if(isChangeTable === false){
+            console.log('isChangeTable = false => reject');
+            return;
+          }else if(flag != json.flag){
+            console.log('flag error => reject');
+            return;
+          }else {
+            console.log('isChangeTable = true  => false');
+            isChangeTable = false;
+          }
+          
           //Remove init button active
           console.log("initBtnStr:"+initBtnStr+"remove active");
           //$(initBtnStr).siblings().removeClass("active");
           $(initBtnStr).addClass().siblings().removeClass("active");
           //Reload table data
-          console.log("v type:"+typeof(msg.v));
+          console.log("type:"+json.type);
 
             table.fnClearTable();
-            var data = JSON.parse(msg.v);
+            var data = JSON.parse(json.data);
             if(data){
                   //console.log("addData type : "+ typeof(data)+" : "+data);
                   table.fnAddData(data);
@@ -59,8 +74,8 @@ function wsConn() {
   ws.onopen = function() {
 
     connected = true;
-
-    var obj = {"id":"init","v":type};
+     
+    var obj = {"id":"init","v":type,flag:flag};
     var getRequest = JSON.stringify(obj);
     console.log("getRequest type : "+ typeof(getRequest)+" : "+getRequest);
     console.log("ws.onopen : "+ getRequest);
@@ -81,14 +96,21 @@ wsConn();           // connect to Node-RED server
 
 function myFunction(id){  // update device
   highlight(id);
+  if(isChangeTable === true){
+    console.log('myFunction : isChangeTable = true change table => reject  ');
+  }else{
+    console.log('myFunction : isChangeTable = false => true');
+    isChangeTable = true;
+  }
+  
   console.log(id);
   if(ws){
       console.log("ws.onopen OK ");
   }
   console.log("id type : "+ typeof(id)+" : "+id);
-  type = id;
+  var json = {host:host,port:port,type:id,flag:flag}
   initBtnStr = "#"+id;
-  var obj = {"id":"change_type","v":id};
+  var obj = {"id":"change_type","v":json};
   var objString = JSON.stringify(obj);
   console.log("getRequest type : "+ typeof(objString)+" : "+objString);
   console.log("ws.onopen : "+ objString);
