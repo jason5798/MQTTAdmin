@@ -30,17 +30,25 @@ router.route('/devices')
 		var mac    = req.query.mac;
 		var option = req.query.option;
 		var mdate  = req.query.mdate;
+		var flag = req.query.flag;
 		var gwId     = req.query.gwId;
 		if(mac){
-			DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),'asc',function(err,devices){
+			DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),'desc',function(err,devices){
 			    if (err)
 					return res.send(err);
+				if(flag){
+					return res.json({flag:flag,devices:devices});
+				}
 				return res.json(devices);
 			});
 		}else if(gwId){
-			DeviceDbTools.findDevicesByGWID(mdate,gwId,Number(option),'asc',function(err,devices){
+			DeviceDbTools.findDevicesByGWID(mdate,gwId,Number(option),'desc',function(err,devices){
 			    if (err)
 					return res.send(err);
+				if(flag){
+					var obj = {flag:flag,devices:devices};
+					return res.json(obj);
+				}
 				return res.json(devices);
 			});
 		}else{
@@ -95,14 +103,17 @@ router.route('/lists')
 	.get(function(req, res) {
 		var name    = req.query.name;
 		var type    = req.query.type;
+		var flag    = req.query.flag;
 		var json    = {type:req.query.type};
 		var now = new Date().getTime();
 
 		JsonFileTools.saveJsonToFile(typepPath,json);
 
-		ListDbTools.findByName('finalist',function(err,lists){
+		ListDbTools.findByFlagName(flag,'finalist',function(err,json){
 			if (err)
 				return res.send(err);
+			var flag = json.flag;
+			var lists = json.lists;
 			if(lists.length>0 ){
 				if(type){
 					var finalList = lists[0]['list'][type];
@@ -132,7 +143,7 @@ router.route('/lists')
 						}
 					}
 				}
-				return res.json(finalList);
+				return res.json({flag:flag,lists:finalList});
 
 			}else{
 				return res.json({});

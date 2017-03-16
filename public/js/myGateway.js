@@ -4,6 +4,9 @@ var now = new Date();
 var date = (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate() );
 var host = window.location.hostname;
 var port = window.location.port;
+//Jason add for avoid ws disturb
+var flag = 'flag_' + Math.floor(Math.random() * 1000);
+var isChangeTable = false;
 var opt2={
     "order": [[ 1, "desc" ]],
     "iDisplayLength": 10,
@@ -33,22 +36,23 @@ function wsConn() {
       var msg =JSON.parse(m.data);
       console.log("from-node-red : id:"+msg.id);
       if(msg.id === 'change_table1' || msg.id === 'change_table2'){
-          //Remove init button active
-          console.log("initBtnStr:"+initBtnStr+"remove active");
-          //$(initBtnStr).siblings().removeClass("active");
-          $(initBtnStr).addClass().siblings().removeClass("active");
-          //Reload table data
-          console.log("v type:"+typeof(msg.v));
-
-            var data = JSON.parse(msg.v);
-            if(data){
-                  //console.log("addData type : "+ typeof(data)+" : "+data);
-                  table.fnAddData(data);
-                  table.$('tr').click(function() {
-                      var row=table.fnGetData(this);
-                  });
-            }
-            waitingDialog.hide();
+           var json = msg.v;
+           if(isChangeTable === false || flag != json.flag){
+            console.log('isChangeTable = false => reject');
+            return;
+          }else {
+            console.log('isChangeTable = true  => false');
+            isChangeTable = false;
+          }
+          var data = JSON.parse(json.data);
+          if(data){
+                //console.log("addData type : "+ typeof(data)+" : "+data);
+                table.fnAddData(data);
+                table.$('tr').click(function() {
+                    var row=table.fnGetData(this);
+                });
+          }
+          waitingDialog.hide();
       }else if(msg.id === 'init_btn'){
           //Set init button active
           console.log("type:"+typeof(msg.v)+" = "+ msg.v);
@@ -129,6 +133,12 @@ function newPage(){
 }
 
 function find() {
+    if(isChangeTable === true){
+      console.log('find() : isChangeTable = true change table => reject  ');
+    }else{
+      console.log('find() : isChangeTable = false => true');
+      isChangeTable = true;
+    }
     showDialog();
     table.fnClearTable();
     var mac = document.getElementById("selected_mac").value;
@@ -140,10 +150,11 @@ function find() {
     }
     var value = {};
     value.mac= mac;
-    value.option= option;
-    value.date= date;
-    value.host= host;
-    value.port= port;
+    value.option = option;
+    value.date   = date;
+    value.host   = host;
+    value.port   = port;
+    value.flag   = flag;
     var mValue = JSON.stringify(value);
     //console.log("id type : "+ typeof(id)+" : "+id);
     var obj = {"id":"find","v":value};

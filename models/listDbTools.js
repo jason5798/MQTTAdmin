@@ -8,11 +8,15 @@ exports.saveList = function (name,list,callback) {
 };
 
 exports.updateList = function (name,list,callback) {
-    return toUpdateList(name,list,callback);
+    return toUpdateList(null,name,list,callback);
 };
 
 exports.findByName = function (find_name,callback) {
-    return toFindByName(find_name,callback); 
+    return toFindByName(null,find_name,callback); 
+};
+
+exports.findByFlagName = function (flag,find_name,callback) {
+    return toFindByName(flag,find_name,callback); 
 };
 
 
@@ -37,7 +41,7 @@ function toSaveList(name,list,callback){
     });
 }
 
-function toFindByName(find_name,callback){
+function toFindByName(flag,find_name,callback){
     if(find_name.length>0){
             //console.log('find_mac.length>0');
             ListModel.find({ name: find_name }, function(err,lists){
@@ -45,13 +49,17 @@ function toFindByName(find_name,callback){
                     return callback(err);
                 }
                 var now = moment().format('YYYY-MM-DD HH:mm:ss');
-                //console.log("find all of name "+find_name+" : "+lists);
+                console.log(now+" find name "+find_name+" : "+lists.length);
                 /*lists.forEach(function(list) {
                     console.log('name:'+list.name + ', data :' +list.list);
                 });*/
 
                 if (lists.length>0) {
                     console.log(now+' findByName() : '+lists.length+' records');
+                    if(flag){
+                        var json = {flag:flag,lists:lists};
+                        return callback(err,json);
+                    }
                     return callback(err,lists);
                 }else{
                     console.log('找不到資料!');
@@ -69,7 +77,7 @@ function toUpdateList(find_name,list,callback) {
     console.log('Debug : update list name='+find_name);
 
 	if(find_name){
-		toFindByName(find_name,function(err,lists){
+		toFindByName(null,find_name,function(err,lists){
             if(err){
                 if(err = '找不到資料'){
                     toSaveList(find_name,list,function(err,result){
