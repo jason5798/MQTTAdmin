@@ -4,18 +4,7 @@
 <meta charset  ="utf-8">
 <meta name     ="viewport" content="width=device-width, initial-scale=1">
 <title><%= title%></title>
-<link href     ="css/bootstrap.min.css" rel="stylesheet">
-<link href     ="css/datepicker3.css" rel="stylesheet">
-<link href     ="css/styles.css" rel="stylesheet">
-<link rel      ="stylesheet" type="text/css" href="/js/jqplot/jquery.jqplot.css"/>
-<!--<link href ="css/jquery-ui.css" rel="stylesheet">
-<script src    ="/js/jquery-ui.min.js"></script>-->
-<script src    ="js/jquery.min.js"></script>
-<script src    ="/socket.io/socket.io.js"></script>
-<script src    ="/js/jqplot/jquery.jqplot.min.js"></script>
-<link href     ="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/hot-sneaks/jquery-ui.css" rel="stylesheet">
-<script type   ="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-
+<%- include ../extend/include_style.ejs %>
 </head>
 <style>
 .loginBox{width:420px;height:230px;padding:0 20px;border:1px solid #fff; color:#000;
@@ -79,8 +68,7 @@ position: absolute;left:50%;top:50%;margin-left:-210px;margin-top:-115px;}
 		</section>
 	</div>
     <center> <br>
-<!-- style="width:16em;margin-left:18px;"-->
-<!-- style="width:7em;margin-left:195px;font-size:16px;margin-top:-30px;"-->
+
     </center>
 
 <script class="code" type="text/javascript">
@@ -88,14 +76,9 @@ position: absolute;left:50%;top:50%;margin-left:-210px;margin-top:-115px;}
         //btn.style.background = "#EEFFBD";
         document.getElementById('error_message').innerText = '';
     }
-    //Jason mark for register post on 2016.08.24
-    /*function register(){
-        //alert('test');
-        document.getElementById("login-form").action="/register";
-        document.getElementById("login-form").submit();
-    }*/
+    
 </script>
-	<script src="js/bootstrap.min.js"></script>
+<%- include ../extend/include_js.ejs %>	
 </body>
 
 </html>
