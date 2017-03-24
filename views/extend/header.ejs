@@ -19,9 +19,27 @@
                     <span class="icon-bar"></span>
                 </button>
                 <!--<a class="navbar-brand" href="/tools">Node admin</a>-->
-
+            </div>
+            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;"> 
+                <% if(user){ %>
+                    <ul class="user-menu">
+                        <li class="dropdown pull-right">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>
+                            <% if(user.name){ %>
+                                <%= user.name %>
+                            <% } %>
+                            <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">                    
+                                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+				<% } %>	
             </div>
 
+            
+                	
+                
         </nav>
            <!-- /. NAV TOP  -->
         <nav class="navbar-default navbar-side" role="navigation">
@@ -73,7 +91,7 @@
           <div id="page-inner">
              <div class="row">
                 <div >
-                  <div class="col-md-3">
+                  <div class="col-md-12">
                       <img src="/icons/Logo1n.png" class="center-block logoStyle"/>
                         &nbsp<br>
                       <div class="col-md-12" style="margin-top: -20px;">

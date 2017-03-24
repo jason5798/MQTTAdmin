@@ -107,8 +107,12 @@ router.route('/lists')
 		var json    = {type:req.query.type};
 		var now = new Date().getTime();
 
-		JsonFileTools.saveJsonToFile(typepPath,json);
-
+		var typeObj = JsonFileTools.getJsonFromFile(typepPath);
+		if(typeObj){
+			typeObj[flag] = type;
+			JsonFileTools.saveJsonToFile(typepPath,typeObj);
+		}
+		
 		ListDbTools.findByFlagName(flag,'finalist',function(err,json){
 			if (err)
 				return res.send(err);

@@ -5,7 +5,7 @@ var date = (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()
 var host = window.location.hostname;
 var port = window.location.port;
 //Jason add for avoid ws disturb
-var flag = 'flag_' + Math.floor(Math.random() * 1000);
+var flag = document.getElementById("flag").value;
 var isChangeTable = false;
 var opt2={
     "order": [[ 1, "desc" ]],
