@@ -31,18 +31,19 @@ function wsConn() {
     if (typeof(m.data) === "string" && m.data !== null){
       var msg =JSON.parse(m.data);
       console.log("from-node-red : id:"+msg.id);
+      if(isChangeTable === false){
+        console.log('isChangeTable = false => reject');
+        return;
+      }else if(flag != json.flag){
+        console.log('flag error => reject');
+        return;
+      }else {
+        console.log('isChangeTable = true  => false');
+        isChangeTable = false;
+      }
       if(msg.id === 'change_table'){
           var json = msg.v;
-          if(isChangeTable === false){
-            console.log('isChangeTable = false => reject');
-            return;
-          }else if(flag != json.flag){
-            console.log('flag error => reject');
-            return;
-          }else {
-            console.log('isChangeTable = true  => false');
-            isChangeTable = false;
-          }
+          
           
           //Remove init button active
           console.log("initBtnStr:"+initBtnStr+"remove active");
@@ -64,6 +65,10 @@ function wsConn() {
       }else if(msg.id === 'init_btn'){
           //Set init button active
           console.log("highlight type:"+typeof(msg.v)+" = "+ msg.v);
+		  if(flag != msg.flag){
+			console.log('flag error => reject');
+			return;
+		  }
           type = msg.v;
           initBtnStr  ='#'+msg.v;
           highlight(type);
@@ -96,6 +101,7 @@ wsConn();           // connect to Node-RED server
 
 function myFunction(id){  // update device
   highlight(id);
+  type = id;
   if(isChangeTable === true){
     console.log('myFunction : isChangeTable = true change table => reject  ');
   }else{
