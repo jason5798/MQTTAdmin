@@ -29,7 +29,10 @@
                                 <%= user.name %>
                             <% } %>
                             <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">                    
+                            <ul class="dropdown-menu" role="menu">
+                                <% if(user.level == 0){ %>
+									<li><a href="/account"><span class="glyphicon glyphicon-cog"></span> Manager</a></li>
+								<% } %>                    
                                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                             </ul>
                         </li>
@@ -94,12 +97,13 @@
                   <div class="col-md-12">
                       <img src="/icons/Logo1n.png" class="center-block logoStyle"/>
                         &nbsp<br>
-                      <div class="col-md-12" style="margin-top: -20px;">
-                        <label>Start Date</label>
-                        <input type="text" id="date" name="date" size="10" readonly>
-                        <input type="button" value="..." id="BTN" name="BTN">
-                    </div>
+                      <% if(title === 'Index' ){ %>
+                            <div class="col-md-12" style="margin-top: -20px;">
+                                <label>Start Date</label>
+                                <input type="text" id="date" name="date" size="10" readonly>
+                                <input type="button" value="..." id="BTN" name="BTN">
+                            </div>
+                      <% } %>
                   </div>
-
 
             <div class="col-md-12 column" style="margin-top: 10px;">
