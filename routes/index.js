@@ -52,13 +52,19 @@ module.exports = function(app) {
 				var finalList = lists[0]['list'][type];
 				//console.log('finalList :'+JSON.stringify(finalList));
 				if(finalList){
+					var overtime = 1;
+					if(type==='pir'){
+						overtime = 6;
+					} else if(type==='flood'){
+						overtime = 8;
+					}
 					var keys = Object.keys(finalList);
 					console.log('Index finalList :'+keys.length);
 					for(var i=0;i<keys.length ;i++){
 						//console.log( i + ') mac : ' + keys[i] +'=>' + JSON.stringify(finalList[keys[i]]));
 						//console.log(i+' result : '+ ((now - finalList[keys[i]].timestamp)/hour));
 						finalList[keys[i]].overtime = true;
-						if( ((now - finalList[keys[i]].timestamp)/hour) < 1 )  {
+						if( ((now - finalList[keys[i]].timestamp)/hour) < overtime )  {
 							finalList[keys[i]].overtime = false;
 						}
 					}

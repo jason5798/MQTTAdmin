@@ -2,17 +2,28 @@ console.log("Message admin device information");
 var connected = false;
 var host = window.location.hostname;
 var port = window.location.port;
-var opt2={
-    //"order": [[ 2, "desc" ]],
-    "iDisplayLength": 100,
-    dom: 'Blrtip',
-    buttons: [
-        'copyHtml5',
-        //'excelHtml5',
-        'csvHtml5',
-        //'pdfHtml5'
-    ]
-};
+//Jason add control
+var flag = document.getElementById("flag").value;
+if(flag === 'blazing-guest'){
+    
+    var opt2={
+        "order": [[ 2, "desc" ]],
+        "iDisplayLength": 25
+    };
+
+}else{
+    var opt2={
+        //"order": [[ 2, "desc" ]],
+        "iDisplayLength": 100,
+        dom: 'Blrtip',
+        buttons: [
+            'copyHtml5',
+            //'excelHtml5',
+            'csvHtml5',
+            //'pdfHtml5'
+        ]
+    };
+}
 var table = $('#table1').dataTable(opt2);
 
 if(location.protocol=="https:"){

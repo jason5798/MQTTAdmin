@@ -30,6 +30,7 @@ function wsConn() {
     //console.log('< from-node-red:',m.data);
     if (typeof(m.data) === "string" && m.data !== null){
       var msg =JSON.parse(m.data);
+      var json = msg.v;
       console.log("from-node-red : id:"+msg.id);
       if(isChangeTable === false){
         console.log('isChangeTable = false => reject');
@@ -42,7 +43,7 @@ function wsConn() {
         isChangeTable = false;
       }
       if(msg.id === 'change_table'){
-          var json = msg.v;
+          
           
           
           //Remove init button active
