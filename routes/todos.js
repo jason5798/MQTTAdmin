@@ -128,7 +128,7 @@ router.route('/lists')
 				if(finalList === undefined ){
 					finalList = null;
 				}else{
-					var overtime = 1;
+					var overtime = 2;
 					if(type==='pir'){
 						overtime = 6;
 					} else if(type==='flood'){

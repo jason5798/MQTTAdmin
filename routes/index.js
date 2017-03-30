@@ -52,7 +52,7 @@ module.exports = function(app) {
 				var finalList = lists[0]['list'][type];
 				//console.log('finalList :'+JSON.stringify(finalList));
 				if(finalList){
-					var overtime = 1;
+					var overtime = 2;
 					if(type==='pir'){
 						overtime = 6;
 					} else if(type==='flood'){

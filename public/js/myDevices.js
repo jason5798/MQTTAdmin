@@ -1,5 +1,9 @@
 console.log("Message admin device information");
 var connected = false;
+var mac = document.getElementById("mac").value;
+var type = document.getElementById("type").value;
+var date = document.getElementById("date").value;
+var option= document.getElementById("option").value;
 var host = window.location.hostname;
 var port = window.location.port;
 //Jason add control
@@ -59,12 +63,7 @@ function wsConn() {
     }
   }
   ws.onopen = function() {
-    var mac = document.getElementById("mac").value;
-    var type = document.getElementById("type").value;
-    var date = document.getElementById("date").value;
-    var option= document.getElementById("option").value;
-    var host = window.location.hostname;
-    var port = window.location.port;
+    
     var json = {mac:mac,type:type,date:date,option:option,host:host,port:port};
     //alert('date :'+ date);
     connected = true;
@@ -109,6 +108,7 @@ function showDialog(){
 function back(){
     //alert('back');
     location.href=document.referrer;
+    window.location.href='/?type='+type;
 }
 
 
