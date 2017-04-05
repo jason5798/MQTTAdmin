@@ -32,19 +32,19 @@ function wsConn() {
       var msg =JSON.parse(m.data);
       var json = msg.v;
       console.log("from-node-red : id:"+msg.id);
-      if(isChangeTable === false){
-        console.log('isChangeTable = false => reject');
-        return;
-      }else if(flag != json.flag){
-        console.log('flag error => reject');
-        return;
-      }else {
-        console.log('isChangeTable = true  => false');
-        isChangeTable = false;
-      }
+     
       if(msg.id === 'change_table'){
           
-          
+          if(isChangeTable === false){
+			console.log('isChangeTable = false => reject');
+			return;
+		  }else if(flag != json.flag){
+			console.log('flag error => reject');
+			return;
+		  }else {
+			console.log('isChangeTable = true  => false');
+			isChangeTable = false;
+		  }
           
           //Remove init button active
           console.log("initBtnStr:"+initBtnStr+"remove active");

@@ -12,6 +12,7 @@ var hour = 60*60*1000;
 var type = 'gps';
 
 module.exports = function(app) {
+  app.get('/red', checkLoginLimit);
   app.get('/', checkLogin);
   app.get('/', function (req, res) {
   	    var now = new Date().getTime();
@@ -52,7 +53,7 @@ module.exports = function(app) {
 				var finalList = lists[0]['list'][type];
 				//console.log('finalList :'+JSON.stringify(finalList));
 				if(finalList){
-					var overtime = 2;
+					var overtime =2;
 					if(type==='pir'){
 						overtime = 6;
 					} else if(type==='flood'){
@@ -61,8 +62,8 @@ module.exports = function(app) {
 					var keys = Object.keys(finalList);
 					console.log('Index finalList :'+keys.length);
 					for(var i=0;i<keys.length ;i++){
-						//console.log( i + ') mac : ' + keys[i] +'=>' + JSON.stringify(finalList[keys[i]]));
-						//console.log(i+' result : '+ ((now - finalList[keys[i]].timestamp)/hour));
+						console.log( i + ') mac : ' + keys[i] +'=>' + JSON.stringify(finalList[keys[i]]));
+						console.log(i+' result : '+ ((now - finalList[keys[i]].timestamp)/hour));
 						finalList[keys[i]].overtime = true;
 						if( ((now - finalList[keys[i]].timestamp)/hour) < overtime )  {
 							finalList[keys[i]].overtime = false;
@@ -391,6 +392,7 @@ module.exports = function(app) {
 };
 
 function checkLogin(req, res, next) {
+	console.log("checkLogin");
   if (!req.session.user) {
     req.flash('error', 'No Register!'); 
     res.redirect('/login');
@@ -405,6 +407,23 @@ function checkNotLogin(req, res, next) {
   if (req.session.user) {
     req.flash('error', 'Have login!'); 
     res.redirect('back');//返回之前的页面
+  }else
+  {
+	  next();
+  }
+  
+}
+
+function checkLoginLimit(req, res, next) {
+  console.log("red checkLoginLimit");
+  if (!req.session.user ) {
+  	console.log("No Register!");
+    req.flash('error', 'No Register!'); 
+    res.redirect('/login');
+  }else if (req.session.user.name !== "admin") {
+  	console.log("NNo Right for red control!");
+    req.flash('error', 'No Right for red control!'); 
+    res.redirect('/login');
   }else
   {
 	  next();
