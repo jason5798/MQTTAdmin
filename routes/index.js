@@ -37,7 +37,7 @@ module.exports = function(app) {
 			var json = {"type":type};
 			JsonFileTools.saveJsonToFile(path2,json);
 		}
-		
+
 		ListDbTools.findByName('finalist',function(err,lists){
 			if(err){
 				res.render('index', { title: 'Index',
@@ -47,7 +47,7 @@ module.exports = function(app) {
 					type:type
 				});
 			}else{
-				
+
 
 				req.session.type = type;
 				var finalList = lists[0]['list'][type];
@@ -394,39 +394,39 @@ module.exports = function(app) {
 function checkLogin(req, res, next) {
 	console.log("checkLogin");
   if (!req.session.user) {
-    req.flash('error', 'No Register!'); 
+    req.flash('error', 'No Register!');
     res.redirect('/login');
   }else
   {
 	  next();
   }
-  
+
 }
 
 function checkNotLogin(req, res, next) {
   if (req.session.user) {
-    req.flash('error', 'Have login!'); 
+    req.flash('error', 'Have login!');
     res.redirect('back');//返回之前的页面
   }else
   {
 	  next();
   }
-  
+
 }
 
 function checkLoginLimit(req, res, next) {
   console.log("red checkLoginLimit");
   if (!req.session.user ) {
   	console.log("No Register!");
-    req.flash('error', 'No Register!'); 
+    req.flash('error', 'No Register!');
     res.redirect('/login');
   }else if (req.session.user.name !== "admin") {
-  	console.log("NNo Right for red control!");
-    req.flash('error', 'No Right for red control!'); 
+  	console.log("No Right for red control!");
+    req.flash('error', 'No Right for red control!');
     res.redirect('/login');
   }else
   {
 	  next();
   }
-  
+
 }

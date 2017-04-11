@@ -255,6 +255,7 @@ function getDevicesArray(obj,item,type){
     }
 
     arr.push(obj.extra.frameCnt);
+    arr.push(obj.extra.fport);
 
     return arr;
 }

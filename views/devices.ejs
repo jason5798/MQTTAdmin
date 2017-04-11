@@ -25,6 +25,7 @@
             <th>ApId</th>
 			<th>ApMac</th>
 			<th>Frame</th>
+			<th>fPort</th>
             </tr>
         </thead>
         <% if(devices != null && devices.length >0){ %>
@@ -106,6 +107,7 @@
 					<td><%= devices[i].extra.gwid%></td>
 					<td></td>
 					<td><%= devices[i].extra.frameCnt%></td>
+					<td><%= devices[i].extra.fport%></td>
 				</tr>
 			<% } %>
 
