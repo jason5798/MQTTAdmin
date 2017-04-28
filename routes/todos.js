@@ -29,11 +29,14 @@ router.route('/devices')
 	.get(function(req, res) {
 		var mac    = req.query.mac;
 		var option = req.query.option;
-		var mdate  = req.query.mdate;
+		var sDate  = req.query.sDate;
+		var eDate  = req.query.eDate;
 		var flag = req.query.flag;
 		var gwId     = req.query.gwId;
 		if(mac){
-			DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),'desc',function(err,devices){
+			var eDate  = req.query.eDate;
+			//DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),'desc',function(err,devices){
+			DeviceDbTools.findDevicesByDate2(mac,sDate,eDate,'desc',function(err,devices){
 			    if (err)
 					return res.send(err);
 				if(flag){
@@ -42,7 +45,7 @@ router.route('/devices')
 				return res.json(devices);
 			});
 		}else if(gwId){
-			DeviceDbTools.findDevicesByGWID(mdate,gwId,Number(option),'desc',function(err,devices){
+			DeviceDbTools.findDevicesByGWID(sdate,gwId,Number(option),'desc',function(err,devices){
 			    if (err)
 					return res.send(err);
 				if(flag){
@@ -112,7 +115,7 @@ router.route('/lists')
 			typeObj[flag] = type;
 			JsonFileTools.saveJsonToFile(typepPath,typeObj);
 		}
-		
+
 		ListDbTools.findByFlagName(flag,'finalist',function(err,json){
 			if (err)
 				return res.send(err);
@@ -128,7 +131,7 @@ router.route('/lists')
 				if(finalList === undefined ){
 					finalList = null;
 				}else{
-					var overtime = 2;
+					var overtime = 1;
 					if(type==='pir'){
 						overtime = 6;
 					} else if(type==='flood'){

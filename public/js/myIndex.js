@@ -1,6 +1,12 @@
+
 console.log("message manager");
+var max = 29;//Default range
 var now = new Date();
-var date = (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate() );
+var oneWeekAgo = new Date();
+oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+var endDateStr = (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate() );
+var startDateStr =  (oneWeekAgo.getFullYear() + '/' + (oneWeekAgo.getMonth() + 1) + '/' + oneWeekAgo.getDate() );
 var connected = false;
 var initBtnStr ="#pir";
 var type = document.getElementById("type").value;
@@ -32,20 +38,18 @@ function wsConn() {
       var msg =JSON.parse(m.data);
       var json = msg.v;
       console.log("from-node-red : id:"+msg.id);
-     
+      if(isChangeTable === false){
+        console.log('isChangeTable = false => reject');
+        return;
+      }else if(flag != json.flag){
+        console.log('flag error => reject');
+        return;
+      }else {
+        console.log('isChangeTable = true  => false');
+        isChangeTable = false;
+      }
       if(msg.id === 'change_table'){
-          
-          if(isChangeTable === false){
-			console.log('isChangeTable = false => reject');
-			return;
-		  }else if(flag != json.flag){
-			console.log('flag error => reject');
-			return;
-		  }else {
-			console.log('isChangeTable = true  => false');
-			isChangeTable = false;
-		  }
-          
+
           //Remove init button active
           console.log("initBtnStr:"+initBtnStr+"remove active");
           //$(initBtnStr).siblings().removeClass("active");
@@ -80,7 +84,7 @@ function wsConn() {
   ws.onopen = function() {
 
     connected = true;
-     
+
     var obj = {"id":"init","v":type,flag:flag};
     var getRequest = JSON.stringify(obj);
     console.log("getRequest type : "+ typeof(getRequest)+" : "+getRequest);
@@ -109,7 +113,7 @@ function myFunction(id){  // update device
     console.log('myFunction : isChangeTable = false => true');
     isChangeTable = true;
   }
-  
+
   console.log(id);
   if(ws){
       console.log("ws.onopen OK ");
@@ -139,9 +143,9 @@ function highlight(id) {
 
 function toSecondTable(mac){
     //alert("mac :"+mac);
-    var date =document.getElementById("date").value;
+    var date =document.getElementById("sDate").value;
     //alert("date :"+date);
-    document.location.href="/devices?mac="+mac+"&type="+type+"&date="+date;
+    document.location.href="/devices?mac="+mac+"&type="+type+"&sDate="+startDateStr+"&eDate="+endDateStr;
 }
 
 function newPage(){
@@ -158,18 +162,68 @@ $(document).ready(function(){
 
     });
     new Calendar({
-        inputField: "date",
+        inputField: "sDate",
         dateFormat: "%Y/%m/%d",
         trigger: "BTN",
         bottomBar: true,
         weekNumbers: true,
-        showTime: 24,
-        onSelect: function() {this.hide();}
+        showTime: false,
+        onSelect: function() {
+          this.hide();
+          startDateStr = document.getElementById("sDate").value;
+          var oneMaxDate= new Date(startDateStr);
+          //alert('oneMonthDate :'+typeof(oneMonthDate));
+          oneMaxDate.setDate(oneMaxDate.getDate() + max);
+
+          if( oneMaxDate.getTime() < now.getTime() ){
+            endDateStr  = (oneMaxDate.getFullYear() + '/' + (oneMaxDate.getMonth() + 1) + '/' + oneMaxDate.getDate() );
+            /*$("#message").show();
+            setTimeout(function(){
+                $("#message").hide();
+            }, 3000);*/
+          }
+          document.getElementById("eDate").value = endDateStr;
+          //
+        }
     });
 
-    if(document.getElementById("date").value === ''){
-      document.getElementById("date").value = date;
+    new Calendar({
+        inputField: "eDate",
+        dateFormat: "%Y/%m/%d",
+        trigger: "BTN1",
+        bottomBar: true,
+        weekNumbers: true,
+        showTime: false,
+        onSelect: function() {
+          this.hide();
+          startDateStr = document.getElementById("sDate").value;
+          endDateStr = document.getElementById("eDate").value;
+          var startDate = new Date(startDateStr);
+          var oneMaxDate= new Date(endDateStr);
+
+          oneMaxDate.setDate(oneMaxDate.getDate() - max);
+          //alert('oneMaxDate :'+(oneMaxDate.getMonth() + 1) + '/' + oneMaxDate.getDate());
+
+          if( oneMaxDate.getTime() > startDate.getTime() ){
+            startDateStr  = (oneMaxDate.getFullYear() + '/' + (oneMaxDate.getMonth() + 1) + '/' + oneMaxDate.getDate() );
+            /*$("#message").show();
+            setTimeout(function(){
+                $("#message").hide();
+            }, 3000);*/
+          }
+          document.getElementById("sDate").value = startDateStr;
+        }
+    });
+
+    //alert(document.getElementById("startDate").value);
+    if(document.getElementById("startDate").value === ''){
+      document.getElementById("sDate").value = startDateStr;
+      document.getElementById("eDate").value = endDateStr;
+    }else{
+      document.getElementById("sDate").value = document.getElementById("startDate").value;
+      document.getElementById("eDate").value = document.getElementById("endDate").value;
     }
+    //alert(document.getElementById("sDate").value);
 
       //table = $("#table1").dataTable(opt2);
 
@@ -178,26 +232,5 @@ $(document).ready(function(){
               toSecondTable(row[1]);
 
           });
-          new Calendar({
-              inputField: "date",
-              dateFormat: "%Y/%m/%d",
-              trigger: "BTN",
-              bottomBar: true,
-              weekNumbers: true,
-              showTime: false,
-              onSelect: function() {this.hide();}
-          });
-
-          document.getElementById("date").value = date;
-     /*$("#table1").on({
-          mouseenter: function(){
-           //stuff to do on mouse enter
-
-           $(this).css({'color':'blue'});
-           },
-           mouseleave: function () {
-           //stuff to do on mouse leave
-           $(this).css({'color':'black'});
-      }},'tr');*/
 
 });

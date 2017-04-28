@@ -134,14 +134,26 @@ exports.findLastDevice = function (json,calllback) {
 /*Find devices by date
 *date option: 0:one days 1:one weeks 2:one months 3:three months
 */
-exports.findDevicesByDate = function (dateStr,mac,dateOption,order,calllback) {
+function findDevicesByDate(dateStr,mac,dateOption,order,calllback) {
     
     var json = {macAddr:mac};
     return toFindDevice(dateStr,json,dateOption,order,calllback);
    
 };
 
-exports.findDevicesByGWID = function (dateStr,gwid,dateOption,order,calllback) {
+function findDevicesByDate2(mac,startDateStr,endDateStr,order,calllback) {
+    var json = {macAddr:mac};
+    var to = moment(endDateStr,'YYYY/MM/DD').add(1,'days').toDate();
+    var from = moment(startDateStr,'YYYY/MM/DD').toDate();
+    json.recv = {$gte:from, $lt:to};
+    console.log( 'to :'+to );
+    console.log( 'from :'+from );
+    console.log('json:'+JSON.stringify(json));
+    return findData(json,order,calllback);
+};
+
+
+function findDevicesByGWID(dateStr,gwid,dateOption,order,calllback) {
     
     var json = {"extra.gwid":gwid};
     return toFindDevice(dateStr,json,dateOption,order,calllback);
@@ -150,11 +162,9 @@ exports.findDevicesByGWID = function (dateStr,gwid,dateOption,order,calllback) {
 
 function toFindDevice(dateStr,json,dateOption,order,calllback) {
     console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : findDevicesByDate()');
-    console.log(JSON.stringify(json));
-    testDate = moment(dateStr,'YYYY/MM/DD').add(1,'days').toDate();
-    var toMoment = moment(testDate);
-    var to = toMoment.toDate();
-
+    var to = moment(dateStr,'YYYY/MM/DD').add(1,'days').toDate();
+    var toMoment = moment(to);
+    
     var from;
     switch(dateOption) {
     case 0:
@@ -176,7 +186,12 @@ function toFindDevice(dateStr,json,dateOption,order,calllback) {
     console.log( 'from :'+from );
     
     json.recv = {$gte:from, $lt:to};
+    console.log('json:'+JSON.stringify(json));
+    return findData(json,order,calllback);
+};
 
+function findData(json,order,calllback) {
+    
     var recvOrder = -1;
     if(order === 'asc'){
         recvOrder = 1;
@@ -200,6 +215,10 @@ function toFindDevice(dateStr,json,dateOption,order,calllback) {
     });
    
 };
+
+exports.findDevicesByDate = findDevicesByDate;
+exports.findDevicesByGWID = findDevicesByGWID;
+exports.findDevicesByDate2 = findDevicesByDate2;
 
 exports.getOptioDeviceList = function (devices,option) {
     var diff = 1;

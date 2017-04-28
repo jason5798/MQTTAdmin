@@ -1,15 +1,11 @@
 console.log("Message admin device information");
 var connected = false;
-var mac = document.getElementById("mac").value;
-var type = document.getElementById("type").value;
-var date = document.getElementById("date").value;
-var option= document.getElementById("option").value;
 var host = window.location.hostname;
 var port = window.location.port;
 //Jason add control
 var flag = document.getElementById("flag").value;
 if(flag === 'blazing-guest'){
-    
+
     var opt2={
         "order": [[ 2, "desc" ]],
         "iDisplayLength": 25
@@ -63,8 +59,15 @@ function wsConn() {
     }
   }
   ws.onopen = function() {
-    
-    var json = {mac:mac,type:type,date:date,option:option,host:host,port:port};
+    var mac = document.getElementById("mac").value;
+    var type = document.getElementById("type").value;
+    //var date = document.getElementById("date").value;
+    //var option= document.getElementById("option").value;
+    var sDate = document.getElementById("sDate").value;
+    var eDate = document.getElementById("eDate").value;
+    var host = window.location.hostname;
+    var port = window.location.port;
+    var json = {mac:mac,type:type,sDate:sDate,eDate:eDate,host:host,port:port};
     //alert('date :'+ date);
     connected = true;
     var obj = {"id":"init","v":json};
@@ -92,11 +95,6 @@ function setButton(_id,_v){ // update slider
    myselect.slider('refresh');
 }
 
-function toSecondTable(mac){
-    //alert("mac : "+mac);
-    //document.location.href="/device?mac="+mac;
-}
-
 function showDialog(){
     //waitingDialog.show('Custom message', {dialogSize: 'sm', progressType: 'warning'});
     waitingDialog.show();
@@ -108,39 +106,4 @@ function showDialog(){
 function back(){
     //alert('back');
     location.href=document.referrer;
-    window.location.href='/?type='+type;
 }
-
-
-$(document).ready(function(){
-    showDialog();
-
-
-    /*table.$('tr').click(function() {
-        var row=table.fnGetData(this);
-        toSecondTable(row[1]);
-
-    });*/
-
-
-    //$("#table1").dataTable(opt); //中文化
-
-
-    /*table.$('tr').click(function() {
-        var row=table.fnGetData(this);
-        toSecondTable(row[1]);
-
-    });
-
-     $("#table1").on({
-          mouseenter: function(){
-           //stuff to do on mouse enter
-
-           $(this).css({'color':'blue'});
-           },
-           mouseleave: function () {
-           //stuff to do on mouse leave
-           $(this).css({'color':'black'});
-      }},'tr');*/
-
-});

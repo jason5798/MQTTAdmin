@@ -7,26 +7,17 @@ var port = window.location.port;
 //Jason add for avoid ws disturb
 var flag = document.getElementById("flag").value;
 var isChangeTable = false;
-if(flag === 'blazing-guest'){
-    
-    var opt2={
-        "order": [[ 2, "desc" ]],
-        "iDisplayLength": 25
-    };
-
-}else{
-	var opt2={
-		"order": [[ 1, "desc" ]],
-		"iDisplayLength": 10,
-		dom: 'Blrtip',
-		buttons: [
-			'copyHtml5',
-			//'excelHtml5',
-			'csvHtml5',
-			//'pdfHtml5'
-		]
-	};
-}
+var opt2={
+    "order": [[ 1, "desc" ]],
+    "iDisplayLength": 10,
+    dom: 'Blrtip',
+    buttons: [
+        'copyHtml5',
+        //'excelHtml5',
+        'csvHtml5',
+        //'pdfHtml5'
+    ]
+};
 var table = $('#table1').dataTable(opt2);
 
 if(location.protocol=="https:"){
@@ -133,7 +124,7 @@ function showDialog(){
     waitingDialog.show();
     setTimeout(function () {
       waitingDialog.hide();
-      }, 5000);
+      }, 30000);
 }
 
 function newPage(){

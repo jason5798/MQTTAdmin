@@ -20,7 +20,7 @@
                 </button>
                 <!--<a class="navbar-brand" href="/tools">Node admin</a>-->
             </div>
-            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;"> 
+            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
                 <% if(user){ %>
                     <ul class="user-menu">
                         <li class="dropdown pull-right">
@@ -32,17 +32,17 @@
                             <ul class="dropdown-menu" role="menu">
                                 <% if(user.level == 0){ %>
 									<li><a href="/account"><span class="glyphicon glyphicon-cog"></span> Manager</a></li>
-								<% } %>                    
+								<% } %>
                                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                             </ul>
                         </li>
                     </ul>
-				<% } %>	
+				<% } %>
             </div>
 
-            
-                	
-                
+
+
+
         </nav>
            <!-- /. NAV TOP  -->
         <nav class="navbar-default navbar-side" role="navigation">
@@ -98,11 +98,25 @@
                       <img src="/icons/Logo1n.png" class="center-block logoStyle"/>
                         &nbsp<br>
                       <% if(title === 'Index' ){ %>
-                            <div class="col-md-12" style="margin-top: -20px;">
-                                <label>Start Date</label>
-                                <input type="text" id="date" name="date" size="10" readonly>
-                                <input type="button" value="..." id="BTN" name="BTN">
-                            </div>
+                            <!-- Select Date -->
+                        <div class="col-md-3">
+                            <label>Start Date</label>
+                            <input type="text" id="sDate" name="sDate" size="10" readonly>
+                            <input type="button" value="..." id="BTN" name="BTN">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>End Date</label>
+                            <input type="text" id="eDate" name="eDate" size="10" readonly>
+                            <input type="button" value="..." id="BTN1" name="BTN1">
+                        </div>
+                        <div class="col-md-6">
+
+                            <label id="message">
+                            查詢最大範圍30天
+                            </label>
+
+                        </div>
                       <% } %>
                   </div>
 

@@ -25,7 +25,6 @@
             <th>ApId</th>
 			<th>ApMac</th>
 			<th>Frame</th>
-			<th>fPort</th>
             </tr>
         </thead>
         <% if(devices != null && devices.length >0){ %>
@@ -107,7 +106,6 @@
 					<td><%= devices[i].extra.gwid%></td>
 					<td></td>
 					<td><%= devices[i].extra.frameCnt%></td>
-					<td><%= devices[i].extra.fport%></td>
 				</tr>
 			<% } %>
 
@@ -117,7 +115,8 @@
 	</table>
 	<input type="hidden" id="mac" name="mac" value="<%= mac%>">
 	<input type="hidden" id="type" name="type" value="<%= type%>">
-	<input type="hidden" id="date" name="date" value="<%= date%>">
-	<input type="hidden" id="option" name="option" value="<%= option%>">
+	<input type="hidden" id="sDate" name="sDate" value="<%= sDate%>">
+	<input type="hidden" id="eDate" name="eDate" value="<%= eDate%>">
+	<!--<input type="hidden" id="option" name="option" value="<%= option%>">-->
 	<input type="hidden" id="flag" name="flag" value="<%= user.name%>">
 <%- include extend/footer %>

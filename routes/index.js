@@ -8,17 +8,32 @@ var JsonFileTools =  require('../models/jsonFileTools.js');
 var path = './public/data/finalList.json';
 var path2 = './public/data/test.json';
 var path3 = './public/data/gwMap.json';
+var path4 = './public/data/date.json';
 var hour = 60*60*1000;
 var type = 'gps';
 
 module.exports = function(app) {
-  app.get('/red', checkLoginLimit);
   app.get('/', checkLogin);
   app.get('/', function (req, res) {
+	    var user = req.session.user;
+		if(user === null || user === undefined){
+			req.flash('success', '');
+    		res.redirect('/login');
+			return;
+		}
+		var startDate="",endDate="";
   	    var now = new Date().getTime();
 		type = req.query.type;
 		var name = req.session.user.name;
-
+		var allDateObj = JsonFileTools.getJsonFromFile(path4);
+		if(allDateObj){
+			var dateObj = allDateObj[user.name];
+			if(dateObj){
+				startDate=dateObj.startDate;
+				endDate=dateObj.endDate;
+			}
+		}
+		
 		if(type === undefined){
 			var typeObj = JsonFileTools.getJsonFromFile(path2);
 			if(typeObj)
@@ -37,7 +52,7 @@ module.exports = function(app) {
 			var json = {"type":type};
 			JsonFileTools.saveJsonToFile(path2,json);
 		}
-
+		
 		ListDbTools.findByName('finalist',function(err,lists){
 			if(err){
 				res.render('index', { title: 'Index',
@@ -47,13 +62,13 @@ module.exports = function(app) {
 					type:type
 				});
 			}else{
-
+				
 
 				req.session.type = type;
 				var finalList = lists[0]['list'][type];
 				//console.log('finalList :'+JSON.stringify(finalList));
 				if(finalList){
-					var overtime =2;
+					var overtime = 1;
 					if(type==='pir'){
 						overtime = 6;
 					} else if(type==='flood'){
@@ -62,8 +77,8 @@ module.exports = function(app) {
 					var keys = Object.keys(finalList);
 					console.log('Index finalList :'+keys.length);
 					for(var i=0;i<keys.length ;i++){
-						console.log( i + ') mac : ' + keys[i] +'=>' + JSON.stringify(finalList[keys[i]]));
-						console.log(i+' result : '+ ((now - finalList[keys[i]].timestamp)/hour));
+						//console.log( i + ') mac : ' + keys[i] +'=>' + JSON.stringify(finalList[keys[i]]));
+						//console.log(i+' result : '+ ((now - finalList[keys[i]].timestamp)/hour));
 						finalList[keys[i]].overtime = true;
 						if( ((now - finalList[keys[i]].timestamp)/hour) < overtime )  {
 							finalList[keys[i]].overtime = false;
@@ -78,7 +93,9 @@ module.exports = function(app) {
 					error: null,
 					finalList:finalList,
 					type:type,
-					user:req.session.user
+					user:req.session.user,
+					startDate:startDate,
+					endDate:endDate
 				});
 			}
 		});
@@ -86,12 +103,32 @@ module.exports = function(app) {
 
   app.get('/devices', checkLogin);
   app.get('/devices', function (req, res) {
+	
+
 	var mac = req.query.mac;
 	var type = req.query.type;
-	var date = req.query.date;
-	var option = '1';
+	var sDate = req.query.sDate;
+	var eDate = req.query.eDate;
+	var user = req.session.user;
+	if(user === null || user === undefined){
+		req.flash('success', '');
+		res.redirect('/login');
+		return;
+	}
+	var allDateObj = JsonFileTools.getJsonFromFile(path4);
+	if(allDateObj){
+		allDateObj[user.name] = {"startDate":sDate,"endDate": eDate};
+		/*if(allDateObj[user.name]){
+			allDateObj[user.name].startDate = sDate;
+			allDateObj[user.name].endDate = eDate;
+		}*/
+	}
+	JsonFileTools.saveJsonToFile(path4,allDateObj);
 	req.session.type = type;
-	DeviceDbTools.findDevicesByDate(date,mac,Number(option),'desc',function(err,devices){
+	//var date = req.query.date;
+	var option = '1';
+	//DeviceDbTools.findDevicesByDate(date,mac,Number(option),'desc',function(err,devices){
+	DeviceDbTools.findDevicesByDate2(mac,sDate,eDate,'desc',function(err,devices){
 		if(err){
 			console.log('find name:'+find_mac);
 			return;
@@ -111,7 +148,9 @@ module.exports = function(app) {
 			error: req.flash('error').toString(),
 			type:req.session.type,
 			mac:mac,
-			date:date,
+			//date:date,
+			sDate:sDate,
+			eDate:eDate,
 			option:option,
 			length:length,
 			user:req.session.user
@@ -392,41 +431,23 @@ module.exports = function(app) {
 };
 
 function checkLogin(req, res, next) {
-	console.log("checkLogin");
   if (!req.session.user) {
-    req.flash('error', 'No Register!');
+    req.flash('error', 'No Register!'); 
     res.redirect('/login');
   }else
   {
 	  next();
   }
-
+  
 }
 
 function checkNotLogin(req, res, next) {
   if (req.session.user) {
-    req.flash('error', 'Have login!');
+    req.flash('error', 'Have login!'); 
     res.redirect('back');//返回之前的页面
   }else
   {
 	  next();
   }
-
-}
-
-function checkLoginLimit(req, res, next) {
-  console.log("red checkLoginLimit");
-  if (!req.session.user ) {
-  	console.log("No Register!");
-    req.flash('error', 'No Register!');
-    res.redirect('/login');
-  }else if (req.session.user.name !== "admin") {
-  	console.log("No Right for red control!");
-    req.flash('error', 'No Right for red control!');
-    res.redirect('/login');
-  }else
-  {
-	  next();
-  }
-
+  
 }
