@@ -33,6 +33,10 @@ router.route('/devices')
 		var eDate  = req.query.eDate;
 		var flag = req.query.flag;
 		var gwId     = req.query.gwId;
+		var page = 0;
+		if(req.query.page){
+			page = Number(req.query.page);
+		}
 		if(mac){
 			var eDate  = req.query.eDate;
 			//DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),'desc',function(err,devices){
@@ -45,14 +49,21 @@ router.route('/devices')
 				return res.json(devices);
 			});
 		}else if(gwId){
-			DeviceDbTools.findDevicesByGWID(sdate,gwId,Number(option),'desc',function(err,devices){
+			DeviceDbTools.findDevicesByGWID(page,sDate,gwId,Number(option),'desc',function(err,object){
 			    if (err)
 					return res.send(err);
+				var obj;
+				var type = getType(object);
+				if(type === 'object'){
+					obj = object;
+				}else{
+					obj = {devices:object};
+				}
 				if(flag){
-					var obj = {flag:flag,devices:devices};
+					obj.flag = flag;
 					return res.json(obj);
 				}
-				return res.json(devices);
+				return res.json(object);
 			});
 		}else{
 			return res.json({});
@@ -160,3 +171,10 @@ router.route('/lists')
 	});
 
 module.exports = router;
+
+function getType(p) {
+    if (Array.isArray(p)) return 'array';
+    else if (typeof p == 'string') return 'string';
+    else if (p != null && typeof p == 'object') return 'object';
+    else return 'other';
+}

@@ -2,8 +2,10 @@ console.log("Message admin device information");
 var connected = false;
 var now = new Date();
 var date = (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate() );
+var mac,option,date;
 var host = window.location.hostname;
 var port = window.location.port;
+var sendCounter = 0;
 //Jason add for avoid ws disturb
 var flag = document.getElementById("flag").value;
 var isChangeTable = false;
@@ -36,15 +38,27 @@ function wsConn() {
       var msg =JSON.parse(m.data);
       console.log("from-node-red : id:"+msg.id);
       if(msg.id === 'change_table1' || msg.id === 'change_table2'){
+
+          console.log("isChangeTable:"+isChangeTable+' , sendCounter:'+sendCounter);
            var json = msg.v;
+
            if(isChangeTable === false || flag != json.flag){
             console.log('isChangeTable = false => reject');
             return;
-          }else {
-            console.log('isChangeTable = true  => false');
+          }
+          sendCounter++;
+          if(sendCounter ===2){
+            sendCounter = 0;
             isChangeTable = false;
           }
           var data = JSON.parse(json.data);
+          if(msg.id === 'change_table1' && json.page){
+            var page = json.page;
+            if(page>1){
+              addPageSelect(page);
+            }
+          }
+
           if(data){
                 //console.log("addData type : "+ typeof(data)+" : "+data);
                 table.fnAddData(data);
@@ -52,6 +66,7 @@ function wsConn() {
                     var row=table.fnGetData(this);
                 });
           }
+
           waitingDialog.hide();
       }else if(msg.id === 'init_btn'){
           //Set init button active
@@ -133,7 +148,22 @@ function newPage(){
 }
 
 function find() {
-    if(isChangeTable === true){
+    if(mac && mac !== document.getElementById("selected_mac").value){
+      removeSelect();
+    }
+    if(option && option !== document.getElementById("time_option").value){
+      removeSelect();
+    }
+    var myPage = document.getElementById("myPage");
+    if(myPage){
+      var page = myPage.value;
+    }else{
+      var page = 0;
+    }
+
+    //alert(page);
+
+    if(isChangeTable === true){//Avoid repeat press search button
       console.log('find() : isChangeTable = true change table => reject  ');
     }else{
       console.log('find() : isChangeTable = false => true');
@@ -141,9 +171,9 @@ function find() {
     }
     showDialog();
     table.fnClearTable();
-    var mac = document.getElementById("selected_mac").value;
-    var option = document.getElementById("time_option").value;
-    var date = document.getElementById("date").value;
+    mac = document.getElementById("selected_mac").value;
+    option = document.getElementById("time_option").value;
+    date = document.getElementById("date").value;
     //alert('mac :'+mac +', option : '+option +' , data : '+date);
     if(ws){
         console.log("ws.onopen OK ");
@@ -155,6 +185,7 @@ function find() {
     value.host   = host;
     value.port   = port;
     value.flag   = flag;
+    value.page   = page;
     var mValue = JSON.stringify(value);
     //console.log("id type : "+ typeof(id)+" : "+id);
     var obj = {"id":"find","v":value};
@@ -163,6 +194,33 @@ function find() {
     console.log("ws.onopen : "+ objString);
     ws.send(objString);     // Request ui status from NR
     console.log("sent find WS");
+}
+
+function addPageSelect(page){
+  var myDiv = document.getElementById("myDiv");
+  removeSelect();
+
+  //Create and append select list
+  var selectList = document.createElement("select");
+  selectList.id = "myPage";
+  myDiv.appendChild(selectList);
+
+  //Create and append the options
+  for (var i = 0; i < page; i++) {
+      var option = document.createElement("option");
+      option.value = i+1;
+      option.text = i+1;
+      selectList.appendChild(option);
+  }
+}
+
+function removeSelect(){
+  var myDiv = document.getElementById("myDiv");
+  var myPage = document.getElementById("myPage");
+  if(myPage){
+    myDiv.removeChild(myPage);
+  }
+
 }
 
 

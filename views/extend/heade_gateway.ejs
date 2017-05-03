@@ -20,7 +20,7 @@
                 </button>
                 <!--<a class="navbar-brand" href="/tools">Node admin</a>-->
             </div>
-            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;"> 
+            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
                 <% if(user){ %>
                     <ul class="user-menu">
                         <li class="dropdown pull-right">
@@ -29,12 +29,12 @@
                                 <%= user.name %>
                             <% } %>
                             <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">                    
+                            <ul class="dropdown-menu" role="menu">
                                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                             </ul>
                         </li>
                     </ul>
-				        <% } %>	
+				        <% } %>
             </div>
 
         </nav>
@@ -95,7 +95,7 @@
                     </div>
                   </div>
                   <!-- Select GW Mac -->
-                  <div class="col-md-3">
+                  <div class="col-md-4">
                     <div class="form-group">
                       <label>Select GW Mac</label>
                       <select id="selected_mac" name="mac">
@@ -151,7 +151,7 @@
                   </div> <!-- col-md-3 -->
 
                   <!-- search Button -->
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <div class="form-group">
 
                         <button type="button" name="search" onClick="find()" class="btn btn-primary btn-sm">
@@ -159,6 +159,9 @@
                         Search
                         </button>
                     </div>
+                  </div> <!-- col-md-3 -->
+                   <div id="myDiv" class="col-md-12">
+                    <label>Select Page</label>
                   </div> <!-- col-md-3 -->
 
                   <div class="col-md-12 column" style="margin-top: 10px;">

@@ -69,3 +69,4 @@ function delDeviceById(_id){
         console.log('Debug remove Device By Id success ');
     });
 }
+
