@@ -40,13 +40,18 @@ module.exports = function(app) {
 				type = typeObj[name];
 				if(type == undefined){
 					type = 'pir';
-					typeObj[name] = type;
-					JsonFileTools.saveJsonToFile(path2,typeObj);
+					if(name){
+						typeObj[name] = type;
+						JsonFileTools.saveJsonToFile(path2,typeObj);
+					}
 				}
 			else{
 				var json = {};
-				json[name] = 'pir';
-				JsonFileTools.saveJsonToFile(path2,typeObj);
+				if(name){
+					json[name] = 'pir';
+					JsonFileTools.saveJsonToFile(path2,typeObj);
+				}
+				
 			}
 		}else if(type != 'gateway'){ //If press device button in gateway page that need update type
 			var json = {"type":type};
@@ -116,14 +121,15 @@ module.exports = function(app) {
 		return;
 	}
 	var allDateObj = JsonFileTools.getJsonFromFile(path4);
-	if(allDateObj){
+	if(allDateObj && user.name){
 		allDateObj[user.name] = {"startDate":sDate,"endDate": eDate};
+		JsonFileTools.saveJsonToFile(path4,allDateObj);
 		/*if(allDateObj[user.name]){
 			allDateObj[user.name].startDate = sDate;
 			allDateObj[user.name].endDate = eDate;
 		}*/
 	}
-	JsonFileTools.saveJsonToFile(path4,allDateObj);
+	
 	req.session.type = type;
 	//var date = req.query.date;
 	var option = '1';
