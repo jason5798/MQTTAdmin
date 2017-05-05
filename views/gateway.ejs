@@ -1,20 +1,45 @@
 <%- include extend/heade_gateway %>
 
-	<table id="table1"  class="display" cellspacing="0" width="100%">
-		<thead>
-            <tr style="color:#428bca">
-      		<th>Mac Address</th>
-                  <th>Receive time</th>
-                  <th>Data</th>
-                  <th>Rss</th>
-                  <th>SNR</th>
-                  <th>SF</th>
-                  <th>Fport</th>
-                  <th>Channel</th>
-                  <th>ApId</th>
-      		<th>Frame</th>
-            </tr>
-        </thead>
-	</table>
+
+<div class="easyui-tabs" style="width:100%;height:720px">
+      <div title="Ap Id 1" style="padding:10px">
+            <table id="table1"  class="display" cellspacing="0" width="100%">
+                <thead>
+                  <tr style="color:#428bca">
+                        <th>Mac Address</th>
+                        <th>Receive time</th>
+                        <th>Data</th>
+                        <th>Rss</th>
+                        <th>SNR</th>
+                        <th>SF</th>
+                        <th>Fport</th>
+                        <th>Channel</th>
+                        <th>ApId</th>
+                        <th>Frame</th>
+                  </tr>
+                </thead>
+              </table>
+      </div>
+      <div title="Ap Id 2" style="padding:10px">
+            <table id="table2"  class="display" cellspacing="0" width="100%">
+                <thead>
+                  <tr style="color:#428bca">
+                        <th>Mac Address</th>
+                        <th>Receive time</th>
+                        <th>Data</th>
+                        <th>Rss</th>
+                        <th>SNR</th>
+                        <th>SF</th>
+                        <th>Fport</th>
+                        <th>Channel</th>
+                        <th>ApId</th>
+                        <th>Frame</th>
+                  </tr>
+                </thead>
+              </table>
+      </div>
+</div>
+
+
       <input type="hidden" id="flag" name="flag" value="<%= user.name%>">
 <%- include extend/footer %>

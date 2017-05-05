@@ -223,9 +223,9 @@ function findData(json,order,calllback) {
         page = json.page;
         delete json.page;
     }
-    
+    console.log('limit:'+limit+' , skip :'+(perPage * (page-1)));
     if(page > 0 ){//The page number is greater than 0, for the counter has been checked
-        console.log('limit:'+limit+' , skip :'+(perPage * (page-1)));
+        
         DeviceModel.find(json)
             //.sort({ recv:recvOrder})
             .limit(limit)
@@ -245,40 +245,21 @@ function findData(json,order,calllback) {
                 return calllback(err,Devices);
             });
     }else{
-        console.log('limit:'+limit+' , skip :'+(0));
+        
         DeviceModel.count(json, function(err, c) {
+            if (err) {
+                console.log('Debug : find Device count:', err);
+                return calllback(err);
+            }
             console.log('Count is ' + c);
             var pageCounter = 1;
             if(c> perPage){
                 pageCounter = Math.ceil(c / perPage);
             }
-            DeviceModel.find(json)
-            .sort({ recv:recvOrder})
-            .limit(limit)
-            .skip(0)
-            .exec(function(err, Devices){
-                if (err) {
-                    console.log('Debug : findDevice err:', err);
-                    return calllback(err);
-                }
-                if(Devices && Devices.length>0){
-                    console.log('Debug :Devices count:',Devices.length);
-                    console.log('Debug :first\n:',Devices[0]['date']);
-                    console.log('Debug :first\n:',Devices[Devices.length-1]['date']);
-                }else{
-                    console.log('Debug :Devices count: 0');
-                }
-                if(pageCounter>1){
-                    var obj = {page:pageCounter,devices:Devices};
-                    return calllback(err,obj);
-                }else{
-                    return calllback(err,Devices);
-                }
-            });
+            return calllback(err,{page:pageCounter});
         });
     }
 };
-
 
 
 exports.findDevicesByDate = findDevicesByDate;

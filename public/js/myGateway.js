@@ -10,7 +10,7 @@ var sendCounter = 0;
 var flag = document.getElementById("flag").value;
 var isChangeTable = false;
 var opt2={
-    "order": [[ 1, "desc" ]],
+    "order": [[ 1, "asc" ]],
     "iDisplayLength": 10,
     dom: 'Blrtip',
     buttons: [
@@ -20,7 +20,8 @@ var opt2={
         //'pdfHtml5'
     ]
 };
-var table = $('#table1').dataTable(opt2);
+var table1 = $('#table1').dataTable(opt2);
+var table2 = $('#table2').dataTable(opt2);
 
 if(location.protocol=="https:"){
   var wsUri="wss://"+host+":"+port+"/ws/gateway";
@@ -36,11 +37,10 @@ function wsConn() {
     //console.log('< from-node-red:',m.data);
     if (typeof(m.data) === "string" && m. data !== null){
       var msg =JSON.parse(m.data);
+      var json = msg.v;
       console.log("from-node-red : id:"+msg.id);
       if(msg.id === 'change_table1' || msg.id === 'change_table2'){
-
-          console.log("isChangeTable:"+isChangeTable+' , sendCounter:'+sendCounter);
-           var json = msg.v;
+        console.log("isChangeTable:"+isChangeTable+' , sendCounter:'+sendCounter);
 
            if(isChangeTable === false || flag != json.flag){
             console.log('isChangeTable = false => reject');
@@ -50,24 +50,36 @@ function wsConn() {
           if(sendCounter ===2){
             sendCounter = 0;
             isChangeTable = false;
+            waitingDialog.hide();
           }
+      }
+      if(msg.id === 'change_table1' ){
+
           var data = JSON.parse(json.data);
-          if(msg.id === 'change_table1' && json.page){
-            var page = json.page;
-            if(page>1){
-              addPageSelect(page);
-            }
-          }
 
           if(data){
                 //console.log("addData type : "+ typeof(data)+" : "+data);
-                table.fnAddData(data);
-                table.$('tr').click(function() {
+                table1.fnAddData(data);
+                table1.$('tr').click(function() {
                     var row=table.fnGetData(this);
                 });
           }
 
-          waitingDialog.hide();
+      }else if(msg.id === 'change_table2'){
+          var data = JSON.parse(json.data);
+          if(data){
+                //console.log("addData type : "+ typeof(data)+" : "+data);
+                table2.fnAddData(data);
+                table2.$('tr').click(function() {
+                    var row=table.fnGetData(this);
+                });
+          }
+      }else if(msg.id === 'change_page'){
+        //alert('json:'+JSON.stringify(json));
+          var page = Number(json.page);
+          if(page>1){
+              addPageSelect(page);
+            }
       }else if(msg.id === 'init_btn'){
           //Set init button active
           console.log("type:"+typeof(msg.v)+" = "+ msg.v);
@@ -170,7 +182,8 @@ function find() {
       isChangeTable = true;
     }
     showDialog();
-    table.fnClearTable();
+    table1.fnClearTable();
+    table2.fnClearTable();
     mac = document.getElementById("selected_mac").value;
     option = document.getElementById("time_option").value;
     date = document.getElementById("date").value;
@@ -202,6 +215,7 @@ function addPageSelect(page){
 
   //Create and append select list
   var selectList = document.createElement("select");
+  selectList.addEventListener("change", find);
   selectList.id = "myPage";
   myDiv.appendChild(selectList);
 
@@ -223,7 +237,6 @@ function removeSelect(){
 
 }
 
-
 $(document).ready(function(){
     highlight('gateway');
     //showDialog();
@@ -231,11 +244,17 @@ $(document).ready(function(){
       document.getElementById("date").value = date;
     }
 
-    table.$('tr').click(function() {
-        var row=table.fnGetData(this);
+    /*table1.$('tr').click(function() {
+        var row=table1.fnGetData(this);
         toSecondTable(row[1]);
 
     });
+
+    table2.$('tr').click(function() {
+        var row=table2.fnGetData(this);
+        toSecondTable(row[1]);
+
+    });*/
 
     new Calendar({
         inputField: "date",
@@ -246,7 +265,6 @@ $(document).ready(function(){
         showTime: false,
         onSelect: function() {this.hide();}
     });
-
 
     //$("#table1").dataTable(opt); //中文化
 
