@@ -395,3 +395,106 @@ function isSameTagCheck(type,mac,recv){
 	}
 }
 
+//Jason add for get data percentage on 2017.06.15
+exports.getDevicesData2 = function (type,devices) {
+    var json = {};
+    var dateJson = {},channelJson = {};
+    var gwipJson = {},gwidJson = {};
+    var weekJson = {},hourJson={};
+
+
+    if(devices){
+        for (var i=0;i<devices.length;i++)
+        {
+            if(i==0){
+              console.log( '#### '+devices[i].mac + ': ' + JSON.stringify(devices[i]) );
+            }
+            dateJson = getDateJson(dateJson,devices[i].date,null);
+            weekJson = getDataJson(weekJson,devices[i].recv,'week');
+            hourJson = getDataJson(hourJson,devices[i].recv,'hour');
+            channelJson = getDataJson(channelJson,devices[i].extra.channel);
+            gwipJson = getDataJson(gwipJson,devices[i].extra.gwip);
+            gwidJson = getDataJson(gwidJson,devices[i].extra.gwid);
+        }
+    }
+    var ordered = {};
+    //Jason add for hour sort on 2017.06.15
+    for(var i=0;i<23;i++){
+        var a = i.toString();
+        ordered[a] = hourJson[a];
+    }
+    
+    json.date = dateJson;
+    json.week = weekJson;
+    json.hour = ordered;
+    json.channel = channelJson;
+    json.gwip = gwipJson;
+    json.gwid = gwidJson;
+
+    var dataString = JSON.stringify(json);
+    /*console.log('Device : '+devices[0].macAddr +' percentage data');
+    console.log('--------------------------------------------------------------------');
+    console.log(dataString);
+    console.log('--------------------------------------------------------------------');*/
+    return dataString;
+};
+
+function getDateJson(json,date){
+    var newDate = date.substring(0,10);
+    //console.log( 'date : ' + date + " to " + date.substring(0,10));
+    var newDate = date.substring(0,10);
+    if(json[newDate]){
+        json[newDate] = json[newDate]+1;
+    }else{
+        json[newDate] = 1;
+    }
+    
+    return json;
+}
+
+function getDataJson(json,data,type){
+    //console.log('type:'+typeof(data));
+    if(typeof(data) === 'number'){
+        //For date format transfer
+        var newData = data.toString();
+    }else if(typeof(data) === 'string' && isDate(data) && type ==='week'){
+        //For date formate transfer
+        var tmpData =new Date(data);
+        var newData = (tmpData.getDay()).toString();
+        /*if(tmpData.getDay()===1){
+            var newData ='Monday';
+        } else if(tmpData.getDay()===2){
+            var newData ='Tuesday';
+        } else if(tmpData.getDay()===3){
+            var newData ='Wednesday';
+        } else if(tmpData.getDay()===4){
+            var newData ='Thursday';
+        } else if(tmpData.getDay()===5){
+            var newData ='Friday';
+        } else if(tmpData.getDay()===6){
+            var newData ='Saturday';
+        } else {
+            var newData ='Sunday';
+        }*/
+    }else if(typeof(data) === 'string' && isDate(data) && type ==='hour'){
+        //For date formate transfer
+        var tmpData =new Date(data);
+        var newData = (tmpData.getHours()).toString();
+        
+    }else{
+        var newData = data;
+    }
+
+    if(json[newData]){
+        json[newData] = json[newData]+1;
+    }else{
+        json[newData] = 1;
+    }
+    
+    return json;
+}
+
+function isDate(date) {
+    return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+}
+
