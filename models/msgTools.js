@@ -304,7 +304,7 @@ function getArray(obj,item){
     arr.push(obj.date);
     arr.push(obj.extra.rssi);
     arr.push(obj.extra.snr);
-    console.log('obj.overtime :'+obj.overtime);
+    //console.log('obj.overtime :'+obj.overtime);
 
 
     if( obj.overtime){
@@ -421,7 +421,9 @@ exports.getDevicesData2 = function (type,devices) {
     //Jason add for hour sort on 2017.06.15
     for(var i=0;i<23;i++){
         var a = i.toString();
-        ordered[a] = hourJson[a];
+        if(hourJson[a]){
+             ordered[a] = hourJson[a];
+        }
     }
     
     json.date = dateJson;
