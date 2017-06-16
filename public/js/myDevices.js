@@ -42,19 +42,32 @@ function wsConn() {
       var msg =JSON.parse(m.data);
       console.log("from-node-red : id:"+msg.id);
       if(msg.id === 'init_table'){
-          //Remove init button active
-          console.log("v : "+msg.v);
+        //Remove init button active
+        //console.log("v : "+msg.v);
 
-          //Reload table data
-          //console.log("v type:"+typeof(msg.v));
+        //Reload table data
+        //console.log("v type:"+typeof( msg.v));
 
-          table.fnClearTable();
-          var data = JSON.parse(msg.v);
-          console.log("addData type : "+ typeof(data)+" : "+data);
-          if(data){
-              table.fnAddData(data);
-          }
-          waitingDialog.hide();
+        table.fnClearTable();
+        var obj = msg.v;
+        var data = JSON.parse(obj.data);
+        if(flag != obj.flag){
+          console.log('flag error => reject');
+          return;
+        }
+        //console.log("addData type : "+ typeof(data)+" : "+data);
+        if(data){
+            table.fnAddData(data);
+        }
+        waitingDialog.hide();
+      }else if(msg.id === 'init_chart'){
+        var nObj = msg.v;
+        var nData = nObj.data;
+        if(flag != nObj.flag){
+          console.log('flag error => reject');
+          return;
+        }
+        showChart(nData);
       }
     }
   }
@@ -67,7 +80,7 @@ function wsConn() {
     var eDate = document.getElementById("eDate").value;
     var host = window.location.hostname;
     var port = window.location.port;
-    var json = {mac:mac,type:type,sDate:sDate,eDate:eDate,host:host,port:port};
+    var json = {mac:mac,type:type,sDate:sDate,eDate:eDate,host:host,port:port,flag:flag};
     //alert('date :'+ date);
     connected = true;
     var obj = {"id":"init","v":json};
@@ -107,3 +120,11 @@ function back(){
     //alert('back');
     location.href=document.referrer;
 }
+
+function showChart(data){
+  console.log('showChart : '+data);
+}
+
+$(document).ready(function(){
+    showDialog();
+});

@@ -12,6 +12,7 @@ var isNeedGWMac = settings.isNeedGWMac;//For blazing
 //Save data to file path
 var path = './public/data/finalList.json';
 var path2 = './public/data/gwMap.json';
+var path3 = './public/data/test.json';
 //Save data
 var finalList = {};
 var macGwIdMapList;//For gateway map (key:mac value:id array)
@@ -137,6 +138,24 @@ exports.getGwIdByMac = function (mac) {
         initMap();
     }
     return macGwIdMapList[mac];
+}
+
+
+
+exports.getTypeMap = function () {
+    return JsonFileTools.getJsonFromFile(path3);
+}
+
+exports.saveTypeMapToFile = function (flag,type) {
+    try {
+        var typeObj = JsonFileTools.getJsonFromFile(path3);
+    }
+    catch (e) {
+        console.log('msgTools saveTypeMapToFile getJsonFromFile '+path3+' error message #### :'+e.toString());
+        typeObj = {};
+    }
+    typeObj[flag] = type;
+    JsonFileTools.saveJsonToFile(path3,typeObj);
 }
 
 
@@ -406,9 +425,9 @@ exports.getDevicesData2 = function (type,devices) {
     if(devices){
         for (var i=0;i<devices.length;i++)
         {
-            if(i==0){
+            /*if(i==0){
               console.log( '#### '+devices[i].mac + ': ' + JSON.stringify(devices[i]) );
-            }
+            }*/
             dateJson = getDateJson(dateJson,devices[i].date,null);
             weekJson = getDataJson(weekJson,devices[i].recv,'week');
             hourJson = getDataJson(hourJson,devices[i].recv,'hour');
@@ -416,6 +435,8 @@ exports.getDevicesData2 = function (type,devices) {
             gwipJson = getDataJson(gwipJson,devices[i].extra.gwip);
             gwidJson = getDataJson(gwidJson,devices[i].extra.gwid);
         }
+    }else{
+        return null;
     }
     var ordered = {};
     //Jason add for hour sort on 2017.06.15
@@ -434,10 +455,10 @@ exports.getDevicesData2 = function (type,devices) {
     json.gwid = gwidJson;
 
     var dataString = JSON.stringify(json);
-    /*console.log('Device : '+devices[0].macAddr +' percentage data');
+    console.log('Device : '+devices[0].macAddr +' percentage data');
     console.log('--------------------------------------------------------------------');
     console.log(dataString);
-    console.log('--------------------------------------------------------------------');*/
+    console.log('--------------------------------------------------------------------');
     return dataString;
 };
 

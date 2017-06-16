@@ -121,20 +121,17 @@ module.exports = function(app) {
 		return;
 	}
 	var allDateObj = JsonFileTools.getJsonFromFile(path4);
-	if(allDateObj && user.name){
-		allDateObj[user.name] = {"startDate":sDate,"endDate": eDate};
-		JsonFileTools.saveJsonToFile(path4,allDateObj);
-		/*if(allDateObj[user.name]){
-			allDateObj[user.name].startDate = sDate;
-			allDateObj[user.name].endDate = eDate;
-		}*/
+	if(allDateObj === null ){
+		allDateObj = {};
 	}
+	allDateObj[user.name] = {"startDate":sDate,"endDate": eDate};
+	JsonFileTools.saveJsonToFile(path4,allDateObj);
 	
 	req.session.type = type;
 	//var date = req.query.date;
 	var option = '1';
-	//DeviceDbTools.findDevicesByDate(date,mac,Number(option),'desc',function(err,devices){
-	DeviceDbTools.findDevicesByDate2(mac,sDate,eDate,'desc',function(err,devices){
+	//DeviceDbTools.findDevicesByDate(date,mac,Number(option),function(err,devices){
+	DeviceDbTools.findDevicesByDate2(mac,sDate,eDate,function(err,devices){
 		if(err){
 			console.log('find name:'+find_mac);
 			return;

@@ -135,23 +135,23 @@ exports.findLastDevice = function (json,calllback) {
 /*Find devices by date
 *date option: 0:one days 1:one weeks 2:one months 3:three months
 */
-function findDevicesByDate(dateStr,mac,dateOption,order,calllback) {
+function findDevicesByDate(dateStr,mac,dateOption,calllback) {
 
     var json = {macAddr:mac};
     return toFindDevice(dateStr,json,dateOption,order,calllback);
 
 };
 
-function findDevicesByDate2(mac,startDateStr,endDateStr,order,calllback) {
+function findDevicesByDate2(mac,startDateStr,endDateStr,calllback) {
     perPage = 20000;
     var json = {"macAddr":mac,"page":1};
     var to = moment(endDateStr,'YYYY/MM/DD').add(1,'days').toDate();
     var from = moment(startDateStr,'YYYY/MM/DD').toDate();
     json.recv = {$gte:from, $lt:to};
-    console.log( 'to :'+to );
-    console.log( 'from :'+from );
+    //console.log( 'to :'+to );
+    //console.log( 'from :'+from );
     console.log('json:'+JSON.stringify(json));
-    return findData(json,order,calllback);
+    return findData(json,calllback);
 };
 
 
@@ -159,11 +159,11 @@ function findDevicesByGWID(page,dateStr,gwid,dateOption,order,calllback) {
     perPage = 10000;
     var json = {"extra.gwid":gwid,"page":page};
     
-    return toFindDevice(dateStr,json,dateOption,order,calllback);
+    return toFindDevice(dateStr,json,dateOption,calllback);
 
 };
 
-function toFindDevice(dateStr,json,dateOption,order,calllback) {
+function toFindDevice(dateStr,json,dateOption,calllback) {
     console.log(moment().format('YYYY-MM-DD HH:mm:ss')+' Debug : findDevicesByDate()');
     var to = moment(dateStr,'YYYY/MM/DD').add(1,'days').toDate();
     var toMoment = moment(to);
@@ -185,12 +185,12 @@ function toFindDevice(dateStr,json,dateOption,order,calllback) {
     default:
         from =  toMoment.subtract(3,'days').toDate();
     }
-    console.log( 'to :'+to );
-    console.log( 'from :'+from );
+    //console.log( 'to :'+to );
+    //console.log( 'from :'+from );
 
     json.recv = {$gte:from, $lt:to};
-    console.log('json:'+JSON.stringify(json));
-    return findData(json,order,calllback);
+    //console.log('json:'+JSON.stringify(json));
+    return findData(json,calllback);
 };
 
 /*Event.find()
@@ -210,20 +210,17 @@ function toFindDevice(dateStr,json,dateOption,order,calllback) {
             })
         })*/
 
-function findData(json,order,calllback) {
+function findData(json,calllback) {
 
     var page = 0;
     var limit = perPage;
-    var recvOrder = -1;
-    if(order === 'asc'){
-        recvOrder = 1;
-    }
+    //var recvOrder = -1;
 
     if(json.page !== undefined){ 
         page = json.page;
         delete json.page;
     }
-    console.log('limit:'+limit+' , skip :'+(perPage * (page-1)));
+    console.log('DeviceTools findData'+JSON.stringify(json)+'\nlimit:'+limit+' , skip :'+(perPage * (page-1)));
     if(page > 0 ){//The page number is greater than 0, for the counter has been checked
         
         DeviceModel.find(json)
@@ -236,9 +233,9 @@ function findData(json,order,calllback) {
                     return calllback(err);
                 }
                 if(Devices && Devices.length>0){
-                    console.log('Debug :Devices count:',Devices.length);
-                    console.log('Debug :first\n:',Devices[0]['date']);
-                    console.log('Debug :first\n:',Devices[Devices.length-1]['date']);
+                    console.log('Debug : Devices count = ',Devices.length);
+                    console.log('Debug : first date = ',Devices[0]['date']);
+                    console.log('Debug : last date = ',Devices[Devices.length-1]['date']);
                 }else{
                     console.log('Debug :Devices count: 0');
                 }

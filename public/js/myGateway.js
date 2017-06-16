@@ -39,13 +39,14 @@ function wsConn() {
       var msg =JSON.parse(m.data);
       var json = msg.v;
       console.log("from-node-red : id:"+msg.id);
-      if(msg.id === 'change_table1' || msg.id === 'change_table2'){
-        console.log("isChangeTable:"+isChangeTable+' , sendCounter:'+sendCounter);
-
-           if(isChangeTable === false || flag != json.flag){
-            console.log('isChangeTable = false => reject');
+      if(msg.id !== 'init_btn'){
+        if(isChangeTable === false || flag != json.flag){
+            console.log('Not user => reject');
             return;
           }
+      }
+      if(msg.id === 'change_table1' || msg.id === 'change_table2'){
+        console.log("isChangeTable:"+isChangeTable+' , sendCounter:'+sendCounter);
           sendCounter++;
           if(sendCounter ===2){
             sendCounter = 0;

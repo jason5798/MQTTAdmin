@@ -28,19 +28,16 @@ router.route('/devices')
 	// get all the bears (accessed at GET http://localhost:8080/api/bears)
 	.get(function(req, res) {
 		var mac    = req.query.mac;
-		var option = req.query.option;
-		var sDate  = req.query.sDate;
-		var eDate  = req.query.eDate;
 		var flag = req.query.flag;
 		var gwId     = req.query.gwId;
-		var page = 0;
-		if(req.query.page){
-			page = Number(req.query.page);
-		}
+		
 		if(mac){
+
+			//sDate and eDate for device
+			var sDate  = req.query.sDate;
 			var eDate  = req.query.eDate;
-			//DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),'desc',function(err,devices){
-			DeviceDbTools.findDevicesByDate2(mac,sDate,eDate,'desc',function(err,devices){
+			//DeviceDbTools.findDevicesByDate(mdate,mac,Number(option),function(err,devices){
+			DeviceDbTools.findDevicesByDate2(mac,sDate,eDate,function(err,devices){
 			    if (err)
 					return res.send(err);
 				if(flag){
@@ -48,7 +45,17 @@ router.route('/devices')
 				}
 				return res.json(devices);
 			});
+
 		}else if(gwId){
+			//option for Gateway
+			var option = req.query.option;
+			var sDate  = req.query.sDate;
+			var page = 0;
+			
+			if(req.query.page){
+				page = Number(req.query.page);
+			}
+
 			DeviceDbTools.findDevicesByGWID(page,sDate,gwId,Number(option),'desc',function(err,object){
 			    if (err)
 					return res.send(err);
@@ -120,12 +127,6 @@ router.route('/lists')
 		var flag    = req.query.flag;
 		var json    = {type:req.query.type};
 		var now = new Date().getTime();
-
-		var typeObj = JsonFileTools.getJsonFromFile(typepPath);
-		if(typeObj){
-			typeObj[flag] = type;
-			JsonFileTools.saveJsonToFile(typepPath,typeObj);
-		}
 
 		ListDbTools.findByFlagName(flag,'finalist',function(err,json){
 			if (err)
