@@ -118,7 +118,8 @@ function showDialog(){
 
 function back(){
     //alert('back');
-    location.href=document.referrer;
+    //location.href=document.referrer;
+	location = '/';
 }
 
 function showChart(data){
