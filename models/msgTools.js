@@ -447,8 +447,19 @@ exports.getDevicesData2 = function (type,devices) {
         }
     }
     
+    var weekName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var weekRename = {}
+    //Jason add for hour sort on 2017.06.15
+    for(var i=0;i<7;i++){
+        var a = i.toString();
+        if(weekJson[a]){
+             weekRename[weekName[i]] = weekJson[a];
+        }
+    }
+
+    
     json.date = dateJson;
-    json.week = weekJson;
+    json.week = weekRename;
     json.hour = ordered;
     json.channel = channelJson;
     json.gwip = gwipJson;
@@ -463,9 +474,8 @@ exports.getDevicesData2 = function (type,devices) {
 };
 
 function getDateJson(json,date){
-    var newDate = date.substring(0,10);
-    //console.log( 'date : ' + date + " to " + date.substring(0,10));
-    var newDate = date.substring(0,10);
+    var newDate = date.substring(6,10);
+    //console.log( 'date : ' + date + " to " + newDate);
     if(json[newDate]){
         json[newDate] = json[newDate]+1;
     }else{

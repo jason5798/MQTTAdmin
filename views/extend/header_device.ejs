@@ -20,7 +20,7 @@
                 </button>
                 <!--<a class="navbar-brand" href="/tools">Node admin</a>-->
             </div>
-            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;"> 
+            <div style="color: white;padding: 15px 50px 5px 50px;float: right;font-size: 16px;">
                 <% if(user){ %>
                     <ul class="user-menu">
                         <li class="dropdown pull-right">
@@ -29,12 +29,12 @@
                                 <%= user.name %>
                             <% } %>
                             <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">                    
+                            <ul class="dropdown-menu" role="menu">
                                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                             </ul>
                         </li>
                     </ul>
-				<% } %>	
+				<% } %>
             </div>
 
         </nav>
@@ -98,7 +98,11 @@
                     &nbsp<br>
             </div>
 
-            <div class="col-md-12 column" style="margin-top: -10px;">
+            <div class="col-md-3" >
+              <input type ="button" onclick="javascript:location.href='#chart'" value="Go to chart"></input>
+            </div>
+
+            <div class="col-md-9" style="margin-top: -10px;">
 
                         <h2>
                             <% if(type==='pir'){ %>
@@ -115,4 +119,4 @@
                         :<%= mac%></h2>
                     </div>
 
-                    <div class="col-md-12 column">
+            <div class="col-md-12 column">
