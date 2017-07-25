@@ -33,7 +33,13 @@ function init(){
 }
 
 function initMap(){
-    macGwIdMapList = JsonFileTools.getJsonFromFile(path2);
+    try {
+        macGwIdMapList = JsonFileTools.getJsonFromFile(path2);
+    }
+    catch (e) {
+        console.log('???? gwMap.json file is wrong :'+e.toString());
+    }
+    
     gwIdMacMapList = getMapList(macGwIdMapList);
 }
 
@@ -143,7 +149,15 @@ exports.getGwIdByMac = function (mac) {
 
 
 exports.getTypeMap = function () {
-    return JsonFileTools.getJsonFromFile(path3);
+    try {
+        var typeObj = JsonFileTools.getJsonFromFile(path3);
+    }
+    catch (e) {
+        console.log('???? test.json file is wrong,rewrite to empty json:'+e.toString());
+        typeObj = {};
+        JsonFileTools.saveJsonToFile(path3,typeObj);
+    }
+    return typeObj;
 }
 
 exports.saveTypeMapToFile = function (flag,type) {

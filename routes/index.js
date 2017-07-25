@@ -25,7 +25,14 @@ module.exports = function(app) {
   	    var now = new Date().getTime();
 		type = req.query.type;
 		var name = req.session.user.name;
-		var allDateObj = JsonFileTools.getJsonFromFile(path4);
+		try {
+			var allDateObj = JsonFileTools.getJsonFromFile(path4);
+		}
+		catch (e) {
+			console.log('???? date.json file is wrong,rewrite to empty json:'+e.toString());
+			allDateObj = {};
+			JsonFileTools.saveJsonToFile(path4,allDateObj);
+		}
 		if(allDateObj){
 			var dateObj = allDateObj[user.name];
 			if(dateObj){
@@ -35,24 +42,27 @@ module.exports = function(app) {
 		}
 		
 		if(type === undefined){
-			var typeObj = JsonFileTools.getJsonFromFile(path2);
+			try {
+				var typeObj = JsonFileTools.getJsonFromFile(path2);
+			}
+			catch (e) {
+				console.log('???? test.json file is wrong,rewrite to empty json:'+e.toString());
+				typeObj = {};
+			}
 			if(typeObj)
 				type = typeObj[name];
 				if(type == undefined){
 					type = 'pir';
 					if(name){
 						typeObj[name] = type;
-						JsonFileTools.saveJsonToFile(path2,typeObj);
 					}
 				}
 			else{
-				var json = {};
 				if(name){
-					json[name] = 'pir';
-					JsonFileTools.saveJsonToFile(path2,typeObj);
+					typeObj[name] = 'pir';
 				}
-				
 			}
+			JsonFileTools.saveJsonToFile(path2,typeObj);
 		}else if(type != 'gateway'){ //If press device button in gateway page that need update type
 			var json = {"type":type};
 			JsonFileTools.saveJsonToFile(path2,json);
@@ -120,7 +130,14 @@ module.exports = function(app) {
 		res.redirect('/login');
 		return;
 	}
-	var allDateObj = JsonFileTools.getJsonFromFile(path4);
+	try {
+		var allDateObj = JsonFileTools.getJsonFromFile(path4);
+	}
+	catch (e) {
+		console.log('???? date.json file is wrong :'+e.toString());
+		allDateObj = null;
+	}
+	
 	if(allDateObj === null ){
 		allDateObj = {};
 	}
@@ -163,7 +180,13 @@ module.exports = function(app) {
 
   app.get('/gateway', checkLogin);
   app.get('/gateway', function (req, res) {
-        var macGwIDMap = JsonFileTools.getJsonFromFile(path3);
+	   try {
+			var macGwIDMap = JsonFileTools.getJsonFromFile(path3);
+		}
+		catch (e) {
+			console.log('???? gwMap.json file is wrong :'+e.toString());
+		}
+        
 		var macList = Object.keys(macGwIDMap);
 		res.render('gateway', { title: 'Gateway',
 			success: null,
