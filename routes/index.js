@@ -49,7 +49,7 @@ module.exports = function(app) {
 				console.log('???? test.json file is wrong,rewrite to empty json:'+e.toString());
 				typeObj = {};
 			}
-			if(typeObj)
+			if(typeObj){
 				type = typeObj[name];
 				if(type == undefined){
 					type = 'pir';
@@ -57,7 +57,7 @@ module.exports = function(app) {
 						typeObj[name] = type;
 					}
 				}
-			else{
+			} else {
 				if(name){
 					typeObj[name] = 'pir';
 				}
